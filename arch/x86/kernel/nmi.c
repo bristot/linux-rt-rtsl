@@ -40,6 +40,8 @@
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/nmi.h>
+#undef CREATE_TRACE_POINTS
+#include <asm/trace/irq_vectors.h>
 
 struct nmi_desc {
 	raw_spinlock_t lock;
@@ -535,12 +537,14 @@ nmi_restart:
 #endif
 
 	nmi_enter();
+	trace_nmi_entry(2);
 
 	inc_irq_stat(__nmi_count);
 
 	if (!ignore_nmis)
 		default_do_nmi(regs);
 
+	trace_nmi_exit(2);
 	nmi_exit();
 
 #ifdef CONFIG_X86_64
