@@ -238,6 +238,7 @@ __visible unsigned int __irq_entry do_IRQ(struct pt_regs *regs)
 	unsigned vector = ~regs->orig_ax;
 
 	entering_irq();
+	trace_external_interrupt_entry(vector);
 
 	/* entering_irq() tells RCU that we're not quiescent.  Check it. */
 	RCU_LOCKDEP_WARN(!rcu_is_watching(), "IRQ failed to wake up RCU");
@@ -260,6 +261,7 @@ __visible unsigned int __irq_entry do_IRQ(struct pt_regs *regs)
 		}
 	}
 
+	trace_external_interrupt_exit(vector);
 	exiting_irq();
 
 	set_irq_regs(old_regs);
