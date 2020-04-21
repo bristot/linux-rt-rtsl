@@ -199,6 +199,8 @@ do { \
 	barrier(); \
 } while (0)
 
+#define preempt_disable_sched() preempt_disable()
+
 #define preempt_lazy_disable() \
 do { \
 	inc_preempt_lazy_count(); \
@@ -210,6 +212,8 @@ do { \
 	barrier(); \
 	preempt_count_dec(); \
 } while (0)
+
+#define preempt_enable_sched()	sched_preempt_enable_no_resched()
 
 #ifdef CONFIG_PREEMPT_RT
 # define preempt_enable_no_resched() sched_preempt_enable_no_resched()
@@ -277,11 +281,15 @@ do { \
 	barrier(); \
 } while (0)
 
+#define preempt_disable_sched_notrace()	preempt_disable_notrace()
+
 #define preempt_enable_no_resched_notrace() \
 do { \
 	barrier(); \
 	__preempt_count_dec(); \
 } while (0)
+
+#define preempt_enable_sched_notrace()  preempt_enable_no_resched_notrace()
 
 #else /* !CONFIG_PREEMPT_COUNT */
 
@@ -292,14 +300,18 @@ do { \
  * region.
  */
 #define preempt_disable()			barrier()
+#define preempt_disable_sched()			barrier()
 #define sched_preempt_enable_no_resched()	barrier()
 #define preempt_enable_no_resched()		barrier()
 #define preempt_enable()			barrier()
+#define preempt_enable_sched()			barrier()
 #define preempt_check_resched()			do { } while (0)
 
 #define preempt_disable_notrace()		barrier()
+#define preempt_disable_sched_notrace()		barrier()
 #define preempt_enable_no_resched_notrace()	barrier()
 #define preempt_enable_notrace()		barrier()
+#define preempt_enable_sched_notrace()		barrier()
 #define preempt_check_resched_rt()		barrier()
 #define preemptible()				0
 
@@ -312,6 +324,10 @@ do { \
 #undef sched_preempt_enable_no_resched
 #undef preempt_enable_no_resched
 #undef preempt_enable_no_resched_notrace
+#undef preempt_disable_sched
+#undef preempt_disable_sched_notrace
+#undef preempt_enable_sched
+#undef preempt_enable_sched_notrace
 #undef preempt_check_resched
 #endif
 
