@@ -163,11 +163,15 @@
 #if defined(CONFIG_DEBUG_PREEMPT) || defined(CONFIG_TRACE_PREEMPT_TOGGLE)
 extern void preempt_count_add(int val);
 extern void preempt_count_sub(int val);
+extern void preempt_count_add_sched(int val);
+extern void preempt_count_sub_sched(int val);
 #define preempt_count_dec_and_test() \
 	({ preempt_count_sub(1); should_resched(0); })
 #else
 #define preempt_count_add(val)	__preempt_count_add(val)
 #define preempt_count_sub(val)	__preempt_count_sub(val)
+#define preempt_count_add_sched(val)	__preempt_count_add(val)
+#define preempt_count_sub_sched(val)	__preempt_count_sub(val)
 #define preempt_count_dec_and_test() __preempt_count_dec_and_test()
 #endif
 
@@ -176,6 +180,9 @@ extern void preempt_count_sub(int val);
 
 #define preempt_count_inc() preempt_count_add(1)
 #define preempt_count_dec() preempt_count_sub(1)
+
+#define preempt_count_inc_sched() preempt_count_add_sched(1)
+#define preempt_count_dec_sched() preempt_count_sub_sched(1)
 
 #ifdef CONFIG_PREEMPT_LAZY
 #define add_preempt_lazy_count(val)	do { preempt_lazy_count() += (val); } while (0)
@@ -199,7 +206,11 @@ do { \
 	barrier(); \
 } while (0)
 
-#define preempt_disable_sched() preempt_disable()
+#define preempt_disable_sched()	\
+do { \
+	preempt_count_inc_sched(); \
+	barrier(); \
+} while (0)
 
 #define preempt_lazy_disable() \
 do { \
@@ -213,7 +224,11 @@ do { \
 	preempt_count_dec(); \
 } while (0)
 
-#define preempt_enable_sched()	sched_preempt_enable_no_resched()
+#define preempt_enable_sched() \
+do { \
+	barrier(); \
+	preempt_count_dec_sched(); \
+} while (0)
 
 #ifdef CONFIG_PREEMPT_RT
 # define preempt_enable_no_resched() sched_preempt_enable_no_resched()

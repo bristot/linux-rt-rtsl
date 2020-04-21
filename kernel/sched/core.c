@@ -3895,7 +3895,7 @@ static inline void preempt_latency_start(int val)
 	}
 }
 
-void preempt_count_add(int val)
+static inline void preempt_count_add_debug(int val, int to_sched)
 {
 #ifdef CONFIG_DEBUG_PREEMPT
 	/*
@@ -3914,6 +3914,16 @@ void preempt_count_add(int val)
 #endif
 	preempt_latency_start(val);
 }
+
+void preempt_count_add_sched(int val)
+{
+	preempt_count_add_debug(val, 1);
+}
+
+void preempt_count_add(int val)
+{
+	preempt_count_add_debug(val, 0);
+}
 EXPORT_SYMBOL(preempt_count_add);
 NOKPROBE_SYMBOL(preempt_count_add);
 
@@ -3927,7 +3937,7 @@ static inline void preempt_latency_stop(int val)
 		trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip());
 }
 
-void preempt_count_sub(int val)
+static inline void preempt_count_sub_debug(int val, int to_sched)
 {
 #ifdef CONFIG_DEBUG_PREEMPT
 	/*
@@ -3945,6 +3955,16 @@ void preempt_count_sub(int val)
 
 	preempt_latency_stop(val);
 	__preempt_count_sub(val);
+}
+
+void preempt_count_sub_sched(int val)
+{
+	return preempt_count_sub_debug(val, 1);
+}
+
+void preempt_count_sub(int val)
+{
+	return preempt_count_sub_debug(val, 0);
 }
 EXPORT_SYMBOL(preempt_count_sub);
 NOKPROBE_SYMBOL(preempt_count_sub);
