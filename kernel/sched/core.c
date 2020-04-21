@@ -4282,9 +4282,9 @@ asmlinkage __visible void __sched schedule(void)
 
 	sched_submit_work(tsk);
 	do {
-		preempt_disable();
+		preempt_disable_sched();
 		__schedule(false);
-		sched_preempt_enable_no_resched();
+		preempt_enable_sched();
 	} while (need_resched());
 	sched_update_worker(tsk);
 }
@@ -4362,11 +4362,11 @@ static void __sched notrace preempt_schedule_common(void)
 		 * traced. The other to still record the preemption latency,
 		 * which can also be traced by the function tracer.
 		 */
-		preempt_disable_notrace();
+		preempt_disable_sched_notrace();
 		preempt_latency_start(1);
 		__schedule(true);
 		preempt_latency_stop(1);
-		preempt_enable_no_resched_notrace();
+		preempt_enable_sched_notrace();
 
 		/*
 		 * Check again in case we missed a preemption opportunity
@@ -4457,7 +4457,7 @@ asmlinkage __visible void __sched notrace preempt_schedule_notrace(void)
 		 * traced. The other to still record the preemption latency,
 		 * which can also be traced by the function tracer.
 		 */
-		preempt_disable_notrace();
+		preempt_disable_sched_notrace();
 		preempt_latency_start(1);
 		/*
 		 * Needs preempt disabled in case user_exit() is traced
@@ -4469,7 +4469,7 @@ asmlinkage __visible void __sched notrace preempt_schedule_notrace(void)
 		exception_exit(prev_ctx);
 
 		preempt_latency_stop(1);
-		preempt_enable_no_resched_notrace();
+		preempt_enable_sched_notrace();
 	} while (need_resched());
 }
 EXPORT_SYMBOL_GPL(preempt_schedule_notrace);
@@ -4492,11 +4492,11 @@ asmlinkage __visible void __sched preempt_schedule_irq(void)
 	prev_state = exception_enter();
 
 	do {
-		preempt_disable();
+		preempt_disable_sched();
 		local_irq_enable();
 		__schedule(true);
 		local_irq_disable();
-		sched_preempt_enable_no_resched();
+		preempt_enable_sched();
 	} while (need_resched());
 
 	exception_exit(prev_state);
