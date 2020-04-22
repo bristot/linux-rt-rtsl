@@ -3441,7 +3441,7 @@ asmlinkage __visible void schedule_tail(struct task_struct *prev)
 
 	rq = finish_task_switch(prev);
 	balance_callback(rq);
-	preempt_enable();
+	preempt_enable_sched();
 
 	if (current->set_child_tid)
 		put_user(task_pid_vnr(current), current->set_child_tid);
