@@ -91,4 +91,28 @@ void trace_preempt_off(unsigned long a0, unsigned long a1, int to_sched)
 		trace_preempt_disable_rcuidle(a0, a1, to_sched);
 	tracer_preempt_off(a0, a1);
 }
+
+void trace_preempt_switch_to_sched(unsigned long a0, unsigned long a1)
+{
+	/*
+	 * We are not actually changing the preempt counter, just changing
+	 * the context in which the preemption was disabled.
+	 *
+	 * here: from the preempt_disable() -> preempt_disable_sched().
+	 */
+	trace_preempt_on(a0, a1, 0);
+	trace_preempt_off(a0, a1, 1);
+}
+
+void trace_preempt_switch_not_sched(unsigned long a0, unsigned long a1)
+{
+	/*
+	 * We are not actually changing the preempt counter, just changing
+	 * the context in which the preemption was disabled.
+	 *
+	 * here: from the preempt_disable_sched() -> preempt_disable().
+	 */
+	trace_preempt_on(a0, a1, 1);
+	trace_preempt_off(a0, a1, 0);
+}
 #endif

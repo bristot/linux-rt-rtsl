@@ -827,6 +827,8 @@ static inline unsigned long get_lock_parent_ip(void)
 #ifdef CONFIG_TRACE_PREEMPT_TOGGLE
   extern void trace_preempt_on(unsigned long a0, unsigned long a1, int to_sched);
   extern void trace_preempt_off(unsigned long a0, unsigned long a1, int to_sched);
+  extern void trace_preempt_switch_to_sched(unsigned long a0, unsigned long a1);
+  extern void trace_preempt_switch_not_sched(unsigned long a0, unsigned long a1);
 #else
 /*
  * Use defines instead of static inlines because some arches will make code out
@@ -834,6 +836,8 @@ static inline unsigned long get_lock_parent_ip(void)
  */
 # define trace_preempt_on(a0, a1, to_sched) do { } while (0)
 # define trace_preempt_off(a0, a1, to_sched) do { } while (0)
+# define trace_preempt_switch_to_sched(a0, a1) do { } while (0)
+# define trace_preempt_switch_not_sched(a0, a1) do { } while (0)
 #endif
 
 #ifdef CONFIG_FTRACE_MCOUNT_RECORD
