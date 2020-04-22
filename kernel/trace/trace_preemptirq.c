@@ -78,14 +78,14 @@ NOKPROBE_SYMBOL(trace_hardirqs_off_caller);
 
 #ifdef CONFIG_TRACE_PREEMPT_TOGGLE
 
-void trace_preempt_on(unsigned long a0, unsigned long a1)
+void trace_preempt_on(unsigned long a0, unsigned long a1, int to_sched)
 {
 	if (!in_nmi())
 		trace_preempt_enable_rcuidle(a0, a1);
 	tracer_preempt_on(a0, a1);
 }
 
-void trace_preempt_off(unsigned long a0, unsigned long a1)
+void trace_preempt_off(unsigned long a0, unsigned long a1, int to_sched)
 {
 	if (!in_nmi())
 		trace_preempt_disable_rcuidle(a0, a1);

@@ -234,7 +234,7 @@ void __local_bh_disable_ip(unsigned long ip, unsigned int cnt)
 #ifdef CONFIG_DEBUG_PREEMPT
 		current->preempt_disable_ip = get_lock_parent_ip();
 #endif
-		trace_preempt_off(CALLER_ADDR0, get_lock_parent_ip());
+		trace_preempt_off(CALLER_ADDR0, get_lock_parent_ip(), 0);
 	}
 }
 EXPORT_SYMBOL(__local_bh_disable_ip);
@@ -245,7 +245,7 @@ static void __local_bh_enable(unsigned int cnt)
 	lockdep_assert_irqs_disabled();
 
 	if (preempt_count() == cnt)
-		trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip());
+		trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip(), 0);
 
 	if (softirq_count() == (cnt & SOFTIRQ_MASK))
 		trace_softirqs_on(_RET_IP_);

@@ -3891,7 +3891,7 @@ static inline void preempt_latency_start(int val, int to_sched)
 #ifdef CONFIG_DEBUG_PREEMPT
 		current->preempt_disable_ip = ip;
 #endif
-		trace_preempt_off(CALLER_ADDR0, ip);
+		trace_preempt_off(CALLER_ADDR0, ip, to_sched);
 	}
 }
 
@@ -3934,7 +3934,7 @@ NOKPROBE_SYMBOL(preempt_count_add);
 static inline void preempt_latency_stop(int val, int to_sched)
 {
 	if (preempt_count() == val)
-		trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip());
+		trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip(), to_sched);
 }
 
 static inline void preempt_count_sub_debug(int val, int to_sched)
