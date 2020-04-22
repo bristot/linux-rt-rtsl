@@ -3884,7 +3884,7 @@ static inline void sched_tick_stop(int cpu) { }
  * If the value passed in is equal to the current preempt count
  * then we just disabled preemption. Start timing the latency.
  */
-static inline void preempt_latency_start(int val)
+static inline void preempt_latency_start(int val, int to_sched)
 {
 	if (preempt_count() == val) {
 		unsigned long ip = get_lock_parent_ip();
@@ -3912,7 +3912,7 @@ static inline void preempt_count_add_debug(int val, int to_sched)
 	DEBUG_LOCKS_WARN_ON((preempt_count() & PREEMPT_MASK) >=
 				PREEMPT_MASK - 10);
 #endif
-	preempt_latency_start(val);
+	preempt_latency_start(val, to_sched);
 }
 
 void preempt_count_add_sched(int val)
@@ -3931,7 +3931,7 @@ NOKPROBE_SYMBOL(preempt_count_add);
  * If the value passed in equals to the current preempt count
  * then we just enabled preemption. Stop timing the latency.
  */
-static inline void preempt_latency_stop(int val)
+static inline void preempt_latency_stop(int val, int to_sched)
 {
 	if (preempt_count() == val)
 		trace_preempt_on(CALLER_ADDR0, get_lock_parent_ip());
@@ -3953,7 +3953,7 @@ static inline void preempt_count_sub_debug(int val, int to_sched)
 		return;
 #endif
 
-	preempt_latency_stop(val);
+	preempt_latency_stop(val, to_sched);
 	__preempt_count_sub(val);
 }
 
@@ -3970,8 +3970,8 @@ EXPORT_SYMBOL(preempt_count_sub);
 NOKPROBE_SYMBOL(preempt_count_sub);
 
 #else
-static inline void preempt_latency_start(int val) { }
-static inline void preempt_latency_stop(int val) { }
+static inline void preempt_latency_start(int val, int to_sched) { }
+static inline void preempt_latency_stop(int val, int to_sched) { }
 #endif
 
 static inline unsigned long get_preempt_disable_ip(struct task_struct *p)
@@ -4383,9 +4383,9 @@ static void __sched notrace preempt_schedule_common(void)
 		 * which can also be traced by the function tracer.
 		 */
 		preempt_disable_sched_notrace();
-		preempt_latency_start(1);
+		preempt_latency_start(1, 1);
 		__schedule(true);
-		preempt_latency_stop(1);
+		preempt_latency_stop(1, 1);
 		preempt_enable_sched_notrace();
 
 		/*
@@ -4478,7 +4478,7 @@ asmlinkage __visible void __sched notrace preempt_schedule_notrace(void)
 		 * which can also be traced by the function tracer.
 		 */
 		preempt_disable_sched_notrace();
-		preempt_latency_start(1);
+		preempt_latency_start(1, 1);
 		/*
 		 * Needs preempt disabled in case user_exit() is traced
 		 * and the tracer calls preempt_enable_notrace() causing
@@ -4488,7 +4488,7 @@ asmlinkage __visible void __sched notrace preempt_schedule_notrace(void)
 		__schedule(true);
 		exception_exit(prev_ctx);
 
-		preempt_latency_stop(1);
+		preempt_latency_stop(1, 1);
 		preempt_enable_sched_notrace();
 	} while (need_resched());
 }
