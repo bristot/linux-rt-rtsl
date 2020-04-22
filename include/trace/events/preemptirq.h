@@ -13,9 +13,9 @@
 
 DECLARE_EVENT_CLASS(preemptirq_template,
 
-	TP_PROTO(unsigned long ip, unsigned long parent_ip),
+	TP_PROTO(unsigned long ip, unsigned long parent_ip, int reason),
 
-	TP_ARGS(ip, parent_ip),
+	TP_ARGS(ip, parent_ip, reason),
 
 	TP_STRUCT__entry(
 		__field(s32, caller_offs)
@@ -34,12 +34,12 @@ DECLARE_EVENT_CLASS(preemptirq_template,
 
 #ifdef CONFIG_TRACE_IRQFLAGS
 DEFINE_EVENT(preemptirq_template, irq_disable,
-	     TP_PROTO(unsigned long ip, unsigned long parent_ip),
-	     TP_ARGS(ip, parent_ip));
+	     TP_PROTO(unsigned long ip, unsigned long parent_ip, int reason),
+	     TP_ARGS(ip, parent_ip, reason));
 
 DEFINE_EVENT(preemptirq_template, irq_enable,
-	     TP_PROTO(unsigned long ip, unsigned long parent_ip),
-	     TP_ARGS(ip, parent_ip));
+	     TP_PROTO(unsigned long ip, unsigned long parent_ip, int reason),
+	     TP_ARGS(ip, parent_ip, reason));
 #else
 #define trace_irq_enable(...)
 #define trace_irq_disable(...)
@@ -49,12 +49,12 @@ DEFINE_EVENT(preemptirq_template, irq_enable,
 
 #ifdef CONFIG_TRACE_PREEMPT_TOGGLE
 DEFINE_EVENT(preemptirq_template, preempt_disable,
-	     TP_PROTO(unsigned long ip, unsigned long parent_ip),
-	     TP_ARGS(ip, parent_ip));
+	     TP_PROTO(unsigned long ip, unsigned long parent_ip, int reason),
+	     TP_ARGS(ip, parent_ip, reason));
 
 DEFINE_EVENT(preemptirq_template, preempt_enable,
-	     TP_PROTO(unsigned long ip, unsigned long parent_ip),
-	     TP_ARGS(ip, parent_ip));
+	     TP_PROTO(unsigned long ip, unsigned long parent_ip, int reason),
+	     TP_ARGS(ip, parent_ip, reason));
 #else
 #define trace_preempt_enable(...)
 #define trace_preempt_disable(...)
