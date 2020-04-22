@@ -290,7 +290,9 @@ static void do_idle(void)
 	smp_mb__after_atomic();
 
 	sched_ttwu_pending();
+	trace_preempt_switch_to_sched(CALLER_ADDR0, get_lock_parent_ip());
 	schedule_idle();
+	trace_preempt_switch_not_sched(CALLER_ADDR0, get_lock_parent_ip());
 
 	if (unlikely(klp_patch_pending(current)))
 		klp_update_patch_state(current);
