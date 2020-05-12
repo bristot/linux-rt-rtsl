@@ -568,14 +568,14 @@ SYM_CODE_START(interrupt_entry)
 	 * we enter from user mode.  There's no reason to optimize this since
 	 * TRACE_IRQS_OFF is a no-op if lockdep is off.
 	 */
-	TRACE_IRQS_OFF
+	TRACE_IRQS_OFF_ENTRY
 
 	CALL_enter_from_user_mode
 
 1:
 	ENTER_IRQ_STACK old_rsp=%rdi save_ret=1
 	/* We entered an interrupt context - irqs are off: */
-	TRACE_IRQS_OFF
+	TRACE_IRQS_OFF_ENTRY
 
 	ret
 SYM_CODE_END(interrupt_entry)
