@@ -4246,7 +4246,9 @@ void __noreturn do_task_dead(void)
 	/* Tell freezer to ignore us: */
 	current->flags |= PF_NOFREEZE;
 
+	trace_preempt_switch_to_sched(CALLER_ADDR0, get_lock_parent_ip());
 	__schedule(false);
+	trace_preempt_switch_not_sched(CALLER_ADDR0, get_lock_parent_ip());
 	BUG();
 
 	/* Avoid "noreturn function does return" - but don't continue if BUG() is a NOP: */
