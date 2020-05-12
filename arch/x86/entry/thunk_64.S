@@ -40,6 +40,7 @@ SYM_FUNC_END(\name)
 #ifdef CONFIG_TRACE_IRQFLAGS
 	THUNK trace_hardirqs_on_thunk,trace_hardirqs_on_caller,1
 	THUNK trace_hardirqs_off_thunk,trace_hardirqs_off_caller,1
+	THUNK trace_hardirqs_off_irq_entry_thunk,trace_hardirqs_off_caller_irq_entry,1
 #endif
 
 #ifdef CONFIG_DEBUG_LOCK_ALLOC
