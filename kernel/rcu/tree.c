@@ -703,14 +703,17 @@ void rcu_irq_exit(void)
  *
  * If you add or remove a call to rcu_irq_exit_irqson(), be sure to test
  * with CONFIG_RCU_EQS_DEBUG=y.
+ *
+ * This function is mostly used to allow tracing on idle state. It is set
+ * as notrace and uses raw_local_irq_* to avoid recursion.
  */
-void rcu_irq_exit_irqson(void)
+void notrace rcu_irq_exit_irqson(void)
 {
 	unsigned long flags;
 
-	local_irq_save(flags);
+	raw_local_irq_save(flags);
 	rcu_irq_exit();
-	local_irq_restore(flags);
+	raw_local_irq_restore(flags);
 }
 
 /*
@@ -879,14 +882,17 @@ void rcu_irq_enter(void)
  *
  * If you add or remove a call to rcu_irq_enter_irqson(), be sure to test
  * with CONFIG_RCU_EQS_DEBUG=y.
+ *
+ * This function is mostly used to allow tracing on idle state. It is set
+ * as notrace and uses raw_local_irq_* to avoid recursion.
  */
-void rcu_irq_enter_irqson(void)
+void notrace rcu_irq_enter_irqson(void)
 {
 	unsigned long flags;
 
-	local_irq_save(flags);
+	raw_local_irq_save(flags);
 	rcu_irq_enter();
-	local_irq_restore(flags);
+	raw_local_irq_restore(flags);
 }
 
 /*
